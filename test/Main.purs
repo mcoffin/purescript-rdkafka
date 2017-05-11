@@ -19,5 +19,8 @@ opts = fold [ groupId := "test-consumer"
             , bootstrapServers := Right ["localhost:9092"]
             ]
 
+mode :: ConsumerMode
+mode = StreamingConsumer mempty
+
 main = launchAff do
-    consume FlowingConsumer opts ["test"] throwException logShow
+    consume mode opts ["test"] throwException logShow

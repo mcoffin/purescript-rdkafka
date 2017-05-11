@@ -36,6 +36,41 @@ function consumeImpl(onReady) {
     };
 }
 
+function consumeStreaming(streamingOptions) {
+    return function (options) {
+        return function (topics) {
+            return function (onError) {
+                return function (onData) {
+                    return function (error) {
+                        return function (success) {
+                            return function () {
+                                try {
+                                    var consumer = new kafka.KafkaConsumer(options);
+                                    var stream = consumer.getReadStream(topics, streamingOptions);
+                                    stream.on('error', function (e) {
+                                        return error(e)();
+                                    });
+                                    stream.consumer.on('event.error', function (e) {
+                                        return onError(e)();
+                                    });
+                                    stream.on('data', function (e) {
+                                        return onData(e)();
+                                    });
+                                    success(stream.consumer)();
+                                } catch(err) {
+                                    return error(err)();
+                                }
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    }
+}
+
+exports.consumeStreaming = consumeStreaming;
+
 exports.consumeFlowing = consumeImpl(function (consumer) {
     consumer.consume();
 });

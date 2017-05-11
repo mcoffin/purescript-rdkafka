@@ -31,7 +31,11 @@ instance showMessage :: Show Message where
 -- | Phantom data type for kafka consumer options
 data ConsumerOptions
 
+-- | Phantom data type for streaming consumer options
+data StreamingOptions
+
 data ConsumerMode = FlowingConsumer
+                  | StreamingConsumer (Options StreamingOptions)
                   | NonFlowingConsumer Int Int
 
 foreign import data Consumer :: Type
@@ -39,6 +43,8 @@ foreign import data Consumer :: Type
 type ConsumeFunction ε = Foreign -> Array String -> (Error -> Eff (rdkafka :: RDKAFKA | ε) Unit) -> (Message -> Eff (rdkafka :: RDKAFKA | ε) Unit) -> (Error -> Eff (rdkafka :: RDKAFKA | ε) Unit) -> (Consumer -> Eff (rdkafka :: RDKAFKA | ε) Unit) -> Eff (rdkafka :: RDKAFKA | ε) Unit
 
 foreign import consumeFlowing :: ∀ ε. ConsumeFunction ε
+
+foreign import consumeStreaming :: ∀ ε. Foreign -> ConsumeFunction ε
 
 foreign import consumeNonFlowing :: ∀ ε. Int -> Int -> ConsumeFunction ε
 
@@ -52,6 +58,7 @@ consume mode consumerOptions topics onError onData = makeAff $ consumeF opts top
     opts = options consumerOptions
     consumeF = case mode of
                  FlowingConsumer -> consumeFlowing
+                 StreamingConsumer streamingOptions -> consumeStreaming $ options streamingOptions
                  NonFlowingConsumer interval count -> consumeNonFlowing interval count
 
 groupId :: Option ConsumerOptions String
