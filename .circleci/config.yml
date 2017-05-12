@@ -1,0 +1,37 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/purescript-rdkafka
+    docker:
+      - image: node:7
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            apt-get update
+            apt-get install -y libsasl2-2 libsasl2-dev
+      - restore_cache:
+          key: npm-{{ checksum "package.json" }}
+      - run:
+          name: Install npm dependencies
+          command: npm i
+      - save_cache:
+          key: npm-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - restore_cache:
+          key: bower-{{ checksum "bower.json" }}
+      - run:
+          name: Install bower dependencies
+          command: npm run bower i -- --allow-root
+      - save_cache:
+          key: bower-{{ checksum "bower.json" }}
+          paths:
+            - bower_components
+      - run:
+          name: Compile PureScript
+          command: npm run pulp build
+      - run:
+          name: Test
+          command: npm run pulp test
