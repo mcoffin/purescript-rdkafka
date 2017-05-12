@@ -12,15 +12,4 @@ import Data.Monoid (mempty)
 import Data.Options (Options, (:=))
 import RDKafka.Consumer
 
-foreign import jsonStringify :: Foreign -> String
-
-opts :: Options ConsumerOptions
-opts = fold [ groupId := "test-consumer"
-            , bootstrapServers := Right ["localhost:9092"]
-            ]
-
-mode :: ConsumerMode
-mode = StreamingConsumer mempty
-
-main = launchAff do
-    consume mode opts ["test"] throwException logShow
+main = logShow "You should add some tests"
