@@ -46,6 +46,3 @@ produce :: ∀ ε. Producer (exception :: EXCEPTION, rdkafka :: RDKAFKA | ε)
         -> Eff (exception :: EXCEPTION, rdkafka :: RDKAFKA | ε) Unit
 produce p topic partition value key =
     produceF p topic (orNull partition) value (orNull key)
-
-bootstrapServers :: Option ProducerOptions (Either String (Array String))
-bootstrapServers = opt "bootstrap.servers" >#< either toForeign (toForeign <<< joinWith ",")

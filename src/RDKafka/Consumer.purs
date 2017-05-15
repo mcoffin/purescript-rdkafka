@@ -60,9 +60,3 @@ consume mode consumerOptions topics onError onData = makeAff $ consumeF opts top
                  FlowingConsumer -> consumeFlowing
                  StreamingConsumer streamingOptions -> consumeStreaming $ options streamingOptions
                  NonFlowingConsumer interval count -> consumeNonFlowing interval count
-
-groupId :: Option ConsumerOptions String
-groupId = opt "group.id"
-
-bootstrapServers :: Option ConsumerOptions (Either String (Array String))
-bootstrapServers = opt "bootstrap.servers" >#< either toForeign (toForeign <<< joinWith ",")
