@@ -22,7 +22,9 @@ function consumeImpl(onReady) {
                                     onReady(consumer);
                                     return success(consumer)();
                                 });
-                                consumer.on('data', onData);
+                                consumer.on('data', function (d) {
+                                    return onData(d)();
+                                });
                                 consumer.on('event.error', function (e) {
                                     return onError(e)();
                                 });
@@ -80,7 +82,7 @@ exports.consumeNonFlowing = function consumeNonFlowing(interval) {
         return consumeImpl(function (consumer) {
             setInterval(function () {
                 consumer.consume(count);
-            });
+            }, interval);
         });
     };
 };
