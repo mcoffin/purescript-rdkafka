@@ -4,12 +4,9 @@ import Prelude
 import Control.Monad.Aff (Aff)
 import Control.Monad.Eff (Eff, kind Effect)
 import Control.Monad.Eff.Exception (EXCEPTION, Error)
-import Data.Either (Either, either)
 import Data.Foreign (Foreign, toForeign)
-import Data.Functor.Contravariant ((>#<))
 import Data.Maybe (Maybe, maybe)
-import Data.Options (Option, Options, opt, options)
-import Data.String (joinWith)
+import Data.Options (Options, options)
 import Node.Buffer (Buffer)
 import RDKafka (RDKAFKA)
 
