@@ -1,5 +1,9 @@
 module RDKafka.Producer
     ( Producer
+    , produce
+    , producer
+    , flush
+    , disconnect
     ) where
 
 import Prelude

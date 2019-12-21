@@ -1,5 +1,6 @@
 module RDKafka.Options
     ( KafkaOptions
+    , TopicOptions
     , metadataBrokerList
     , bootstrapServers
     , securityProtocol
@@ -16,6 +17,9 @@ import Data.String.Common (joinWith)
 
 -- | Phantom data type for kafka options
 data KafkaOptions
+
+-- | Phantom data type for topic options
+data TopicOptions
 
 metadataBrokerList :: Option KafkaOptions (Array String)
 metadataBrokerList = joinWith "," >$< opt "metadata.broker.list"

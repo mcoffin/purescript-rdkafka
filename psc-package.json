@@ -8,12 +8,15 @@
     "contravariant",
     "effect",
     "exceptions",
+    "foldable-traversable",
     "foreign",
+    "foreign-generic",
     "maybe",
     "node-buffer",
     "options",
     "prelude",
     "strings",
+    "transformers",
     "tuples"
   ]
 }
