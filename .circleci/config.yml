@@ -1,0 +1,38 @@
+version: 2.1
+jobs:
+  build:
+    working_directory: ~/purescript-rdkafka
+    docker:
+      - image: node:10
+    steps:
+      - checkout
+      - run:
+          name: Install system dependencies
+          command: |
+            apt-get update -y
+            apt-get install -y libsasl2-2 libsasl2-dev
+      - restore_cache:
+          key: npm-{{ checksum "package.json" }}
+      - run:
+          name: Install npm dependencies
+          command: npm i
+      - save_cache:
+          key: npm-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - restore_cache:
+          key: psc-package-{{ checksum "psc-package.json" }}
+      - run:
+          name: Install psc-package dependencies
+          command: |
+            mv src src-bak
+            npm run psc-package build
+            mv src-bak src
+      - save_cache:
+          key: psc-package-{{ checksum "psc-package.json" }}
+          paths:
+            - .psc-package
+            - output
+      - run:
+          name: Compile PureScript
+          command: npm run psc-package build

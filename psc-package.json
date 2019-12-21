@@ -1,0 +1,19 @@
+{
+  "name": "purescript-rdkafka",
+  "set": "psc-0.13.3",
+  "source": "https://github.com/purescript/package-sets.git",
+  "depends": [
+    "aff",
+    "aff-promise",
+    "contravariant",
+    "effect",
+    "exceptions",
+    "foreign",
+    "maybe",
+    "node-buffer",
+    "options",
+    "prelude",
+    "strings",
+    "tuples"
+  ]
+}
