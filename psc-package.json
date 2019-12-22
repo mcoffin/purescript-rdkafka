@@ -5,6 +5,7 @@
   "depends": [
     "aff",
     "aff-promise",
+    "console",
     "contravariant",
     "effect",
     "exceptions",

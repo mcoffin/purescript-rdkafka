@@ -78,13 +78,14 @@ instance decodeMessage :: Decode Message where
         offset <- readProp "offset" v >>= decode
         partition <- readProp "partition" v >>= decode
         key <- readPropMaybe "key" v >>= traverse decodeValue
+        timestamp <- readPropMaybe "key" v >>= traverse decode
         pure $ Message { value: value
                        , size: size
                        , topic: topic
                        , offset: offset
                        , partition: partition
                        , key: key
-                       , timestamp: Nothing
+                       , timestamp: timestamp
                        }
 
 consumer :: ∀ a. (Error -> Effect a) -> Options KafkaOptions ->  Options TopicOptions -> Array String -> Aff Consumer

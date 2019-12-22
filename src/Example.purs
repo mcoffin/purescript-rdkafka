@@ -17,12 +17,17 @@ import Effect.Unsafe (unsafePerformEffect)
 import Node.Buffer (Buffer)
 import Node.Buffer as B
 import Node.Encoding as Encoding
+import RDKafka (Offset(..))
 import RDKafka.Consumer ( consumer
                         , consumeBatch
                         , Message(..)
                         )
 import RDKafka.Options ( KafkaOptions
+                       , autoOffsetReset
+                       , enableAutoCommit
                        , bootstrapServers
+                       , metadataBrokerList
+                       , groupId
                        )
 
 showValue :: Either String Buffer -> String
@@ -33,6 +38,6 @@ main :: Effect Unit
 main = do
     log "Starting..."
     launchAff_ do
-        c <- consumer throwException (bootstrapServers := ["localhost:9092"]) mempty ["messages"]
+        c <- consumer throwException (metadataBrokerList := ["localhost:9092"] <> groupId := "purescript-rdkafka-example" <> enableAutoCommit := false) (autoOffsetReset := OffsetBeginning) ["messages"]
         messages <- consumeBatch 5 c
         liftEffect (fold $ log <$> showValue <$> (\(Message m) -> m.value) <$> messages)
