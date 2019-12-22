@@ -4,6 +4,7 @@ module RDKafka.Consumer
     , consumer
     , consumeBatch
     , consumeStream
+    , toClient
     ) where
 
 import Prelude
@@ -39,12 +40,14 @@ import Foreign.Class ( class Decode
                      )
 import Foreign.Index (readProp)
 import Node.Buffer (Buffer)
+import RDKafka.Client (RDKafkaClient)
 import RDKafka.Options ( KafkaOptions
                        , TopicOptions
                        )
 import RDKafka.Util ( readPropMaybe
                     , valueOrThrowByShow
                     )
+import Unsafe.Coerce (unsafeCoerce)
 
 foreign import data Consumer :: Type
 
@@ -99,3 +102,6 @@ consumeBatch batchSize = (toAffE <$> runFn2 consumeBatchImpl batchSize) >=> \res
 
 consumeStream :: ∀ a. (Message -> Aff a) -> Consumer -> Effect Unit
 consumeStream handleMessage = runFn2 consumeStreamImpl $ fromAff <$> handleMessage
+
+toClient :: Consumer -> RDKafkaClient
+toClient = unsafeCoerce

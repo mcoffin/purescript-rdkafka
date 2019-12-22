@@ -4,6 +4,7 @@ module RDKafka.Producer
     , producer
     , flush
     , disconnect
+    , toClient
     ) where
 
 import Prelude
@@ -30,7 +31,9 @@ import Foreign ( Foreign
                , unsafeToForeign
                )
 import Node.Buffer (Buffer)
+import RDKafka.Client (RDKafkaClient)
 import RDKafka.Options (KafkaOptions)
+import Unsafe.Coerce (unsafeCoerce)
 
 foreign import data Producer :: Type
 
@@ -61,3 +64,6 @@ flush = map toAffE <$> runFn2 flushImpl
 -- | as the producer's handlers are still waiting for more events
 disconnect :: Int -> Producer -> Aff Unit
 disconnect = map toAffE <$> runFn2 disconnectImpl
+
+toClient :: Producer -> RDKafkaClient
+toClient = unsafeCoerce
