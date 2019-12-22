@@ -1,6 +1,6 @@
 {
   "name": "purescript-rdkafka",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "purescript bindings for node-rdkafka",
   "main": "output/Kafka",
   "scripts": {
