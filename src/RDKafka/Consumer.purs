@@ -20,7 +20,7 @@ import Data.Function.Uncurried ( Fn2
                                , runFn2
                                , runFn4
                                )
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe)
 import Data.Options ( Options
                     , options
                     )
