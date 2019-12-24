@@ -30,6 +30,7 @@ import Effect.Exception (Error)
 import Foreign ( Foreign
                , unsafeToForeign
                )
+import Foreign.NullOrUndefined (null)
 import Node.Buffer (Buffer)
 import RDKafka.Client (RDKafkaClient)
 import RDKafka.Options (KafkaOptions)
@@ -37,7 +38,6 @@ import Unsafe.Coerce (unsafeCoerce)
 
 foreign import data Producer :: Type
 
-foreign import foreignNull :: Foreign
 foreign import producerImpl :: ∀ a. Fn2 (Error -> Effect a) Foreign (Effect (Promise Producer))
 foreign import produceImpl :: Fn5 String Int Foreign Foreign Producer (Effect Unit)
 foreign import flushImpl :: Fn2 Int Producer (Effect (Promise Unit))
@@ -54,7 +54,7 @@ produce (Tuple topic maybePartition) (Tuple maybeKey value) =
         partition :: Int
         partition = fromMaybe (-1) maybePartition
         key :: Foreign
-        key = maybe foreignNull unsafeToForeign maybeKey
+        key = maybe null unsafeToForeign maybeKey
 
 -- | flush all messages queued on the given producer
 flush :: Int -> Producer -> Aff Unit

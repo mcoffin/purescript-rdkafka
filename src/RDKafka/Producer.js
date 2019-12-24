@@ -26,5 +26,3 @@ exports.flushImpl = function flushImpl(timeout, producer) {
 exports.disconnectImpl = function disconnectImpl(timeout, producer) {
     return () => promisify(producer.disconnect).bind(producer)(timeout);
 };
-
-exports.foreignNull = null;
