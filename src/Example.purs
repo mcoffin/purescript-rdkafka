@@ -18,9 +18,11 @@ import Node.Buffer (Buffer)
 import Node.Buffer as B
 import Node.Encoding as Encoding
 import RDKafka (Offset(..))
+import RDKafka.Client (queryWatermarkOffsets)
 import RDKafka.Consumer ( consumer
                         , consumeBatch
                         , Message(..)
+                        , toClient
                         )
 import RDKafka.Options ( KafkaOptions
                        , autoOffsetReset
@@ -39,5 +41,8 @@ main = do
     log "Starting..."
     launchAff_ do
         c <- consumer throwException (metadataBrokerList := ["localhost:9092"] <> groupId := "purescript-rdkafka-example" <> enableAutoCommit := false) (autoOffsetReset := OffsetBeginning) ["messages"]
+        let cc = toClient c
+        watermarks <- queryWatermarkOffsets "messages" 0 10000 cc
+        liftEffect <$> log $ "(" <> show watermarks.lowOffset <> " -> " <> show watermarks.highOffset <> ")"
         messages <- consumeBatch 5 c
         liftEffect (fold $ log <$> showValue <$> (\(Message m) -> m.value) <$> messages)

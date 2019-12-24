@@ -1,6 +1,7 @@
 module RDKafka.Options
     ( KafkaOptions
     , TopicOptions
+    , SASLMechanism(..)
     , autoOffsetReset
     , enableAutoCommit
     , metadataBrokerList
@@ -25,6 +26,10 @@ data KafkaOptions
 -- | Phantom data type for topic options
 data TopicOptions
 
+-- | Enum data type for sasl.mechanism
+data SASLMechanism = Plain
+                   | GssApi
+
 metadataBrokerList :: Option KafkaOptions (Array String)
 metadataBrokerList = joinWith "," >$< opt "metadata.broker.list"
 
@@ -34,8 +39,11 @@ bootstrapServers = joinWith "," >$< opt "bootstrap.servers"
 securityProtocol :: Option KafkaOptions String
 securityProtocol = opt "security.protocol"
 
-saslMechanism :: Option KafkaOptions String
-saslMechanism = opt "sasl.mechanism"
+saslMechanism :: Option KafkaOptions SASLMechanism
+saslMechanism = mechanismToString >$< opt "sasl.mechanism" where
+    mechanismToString :: SASLMechanism -> String
+    mechanismToString Plain = "PLAIN"
+    mechanismToString GssApi = "GSSAPI"
 
 saslUsername :: Option KafkaOptions String
 saslUsername = opt "sasl.username"
