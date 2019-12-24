@@ -18,7 +18,9 @@ import Node.Buffer (Buffer)
 import Node.Buffer as B
 import Node.Encoding as Encoding
 import RDKafka (Offset(..))
-import RDKafka.Client (queryWatermarkOffsets)
+import RDKafka.Client ( getMetadata
+                      , queryWatermarkOffsets
+                      )
 import RDKafka.Consumer ( consumer
                         , consumeBatch
                         , Message(..)
@@ -36,12 +38,16 @@ showValue :: Either String Buffer -> String
 showValue (Left s) = s
 showValue (Right b) = unsafePerformEffect $ B.toString Encoding.UTF8 b
 
+foreign import consoleLog :: ∀ a. a -> Effect Unit
+
 main :: Effect Unit
 main = do
     log "Starting..."
     launchAff_ do
         c <- consumer throwException (metadataBrokerList := ["localhost:9092"] <> groupId := "purescript-rdkafka-example" <> enableAutoCommit := false) (autoOffsetReset := OffsetBeginning) ["messages"]
         let cc = toClient c
+        metadata <- getMetadata "messages" 10000 cc
+        liftEffect $ consoleLog metadata
         watermarks <- queryWatermarkOffsets "messages" 0 10000 cc
         liftEffect <$> log $ "(" <> show watermarks.lowOffset <> " -> " <> show watermarks.highOffset <> ")"
         messages <- consumeBatch 5 c

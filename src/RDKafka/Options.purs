@@ -5,16 +5,17 @@ module RDKafka.Options
     , autoOffsetReset
     , enableAutoCommit
     , metadataBrokerList
-    , bootstrapServers
-    , securityProtocol
+    , bootstrapServers , securityProtocol
     , saslMechanism
     , saslUsername
     , saslPassword
     , groupId
     ) where
 
+import Prelude
 import Data.Options ( Option
                     , opt
+                    , tag
                     )
 import Data.Functor.Contravariant ((>$<))
 import Data.String.Common (joinWith)
@@ -56,6 +57,12 @@ groupId = opt "group.id"
 
 enableAutoCommit :: Option KafkaOptions Boolean
 enableAutoCommit = opt "enable.auto.commit"
+
+socketKeepAliveEnable :: Option KafkaOptions Boolean
+socketKeepAliveEnable = opt "socket.keepalive.enable"
+
+socketKeepAliveDisable :: Option KafkaOptions Unit
+socketKeepAliveDisable = opt "socket.keepalive.enable" `tag` false
 
 autoOffsetReset :: Option TopicOptions Offset
 autoOffsetReset = offsetToString >$< opt "auto.offset.reset" where
